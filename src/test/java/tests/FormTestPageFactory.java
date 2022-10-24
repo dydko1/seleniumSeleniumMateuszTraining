@@ -1,15 +1,12 @@
+package tests;
+
+import com.sun.source.tree.AssertTree;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.FormPage;
 
-import java.io.File;
-import java.util.List;
-import java.util.Random;
-
-public class FormTest extends TestBase {
+public class FormTestPageFactory extends TestBase {
 
     By firstName = By.id("inputFirstName3");
     By lastName = By.id("inputLastName3");
@@ -21,16 +18,32 @@ public class FormTest extends TestBase {
     By selectContinent = By.id("selectContinents");
     By selectCommandsBox = By.id("selectSeleniumCommands");
     By inputFile = By.id("chooseFile");
-    By buttonClick=By.cssSelector("button[type='submit']");
-    By validateForm=By.id("validator-message");
+    By buttonClick = By.cssSelector("button[type='submit']");
+    By validateForm = By.id("validator-message");
 
 
     @Test
     public void verifyFillFormWithSuccess() throws InterruptedException {
         driver.get("http://51.75.61.161:9102/form.php");
 
-        driver.findElement(firstName).sendKeys("Mirek");
-        driver.findElement(lastName).sendKeys("Dyduch");
+        FormPage fillFormPage = new FormPage(driver);
+
+        fillFormPage.setFirstName("Mirek");
+        fillFormPage.setLastName("Dydko");
+        fillFormPage.setInputEmail("Dydko@wp.pl");
+        fillFormPage.setAge(30);
+        fillFormPage.selectRandomGender();
+        fillFormPage.selectExperience();
+        fillFormPage.selectProfession();
+        fillFormPage.selectContinent(1);
+        fillFormPage.selectCommands(2);
+        fillFormPage.uploadFile("notes.txt");
+        fillFormPage.clickSignIn();
+        String s = fillFormPage.getConfirmationMessage();
+
+        Assert.assertEquals(s,"Form send with success");
+
+        /*
         driver.findElement(email).sendKeys("miros@wp.pl");
         //driver.findElement(sex).click();
         List<WebElement> genders = driver.findElements(gender);
@@ -63,11 +76,9 @@ public class FormTest extends TestBase {
         //-- **********
         driver.findElement(buttonClick).click();
         Assert.assertEquals(driver.findElement(validateForm).getText(),"Form send with success");
-
+*/
         Thread.sleep(2000);
     }
 
-    public WebElement getRandomElement(List<WebElement> elements) {
-        return elements.get(new Random().nextInt(elements.size()));
-    }
+
 }
